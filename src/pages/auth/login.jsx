@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
 const API = "http://localhost:2020"
 
-
 export default function LoginPage() { 
-
+  const navigate = useNavigate(); 
+  const { setToken } = useContext(AuthContext)
   const handleSubmit = async (e) => { 
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target)) 
-    console.log(data)
     try { 
       const res = await fetch(`${API}/auth/login`, { 
         method: 'POST',
@@ -18,7 +19,8 @@ export default function LoginPage() {
         throw new Error("Failed fetch data.")
       }
       const responseData = await res.json();
-      localStorage.setItem("token", responseData.results.token)
+      setToken(responseData.results.token)
+      navigate("/")
     } catch (e) { 
       console.log(e.message)
     }
