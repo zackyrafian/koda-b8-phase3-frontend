@@ -1,7 +1,8 @@
-import { Copy, Link2, ListFilter, Search, Trash } from "lucide-react";
+import { Calendar, Copy, Link2, ListFilter, Search, Trash } from "lucide-react";
 import { useContext, useEffect, useState, } from "react";
 import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
+import { formatDate } from "../../utils/format";
 const API = "http://localhost:2020"
 
 export default function MyLinksPage() { 
@@ -38,6 +39,11 @@ export default function MyLinksPage() {
         method: "DELETE", 
         headers: { Authorization: `Bearer ${token}` }
       })
+      
+      if (res.status === 401) { 
+        logout();
+        return;
+      }
       if (!res.ok) { 
         throw new Error (res.message)
       }
@@ -58,7 +64,7 @@ export default function MyLinksPage() {
             </div>
             <div className="text-right">
               <h1 className="text-xl">TOTAL ACTIVE</h1>
-              <p className="text-3xl font-semibold ">124</p>
+              <p className="text-3xl font-semibold ">{slugs?.length}</p>
             </div>
           </div>
           <div className="bg-white p-2 rounded-lg flex gap-3 justify-between border border-black/20">
@@ -71,13 +77,17 @@ export default function MyLinksPage() {
   
           <div className="flex flex-col gap-2">
             {slugs?.map((slug) => ( 
-              <div key={slug.id} className="p-4 bg-white rounded-lg flex justify-between items-center">
+              <div key={slug.id} className="p-4 bg-white border border-black/20 rounded-lg flex justify-between items-center">
                 <div className="max-w-lg">
                   <div className="flex gap-2 text-blue-800">
                     <Link2/>
                     <span className="font-bold">{window.location.host}/{slug.slug}</span>
                   </div>
-                  <p title={slug.original_url} className="max-w-2xl truncate">{slug.original_url}</p>
+                  <p title={slug.original_url} className="max-w-2xl truncate text-sm">{slug.original_url}</p>
+                  <div className="pt-2 text-xs flex items-center gap-2">
+                    <Calendar size={14}/>
+                    <span>{formatDate(slug.createdAt)}</span>
+                  </div>
                 </div>
                 <div className="flex gap-4 items-center">
                   <div className="bg-blue-300/50 p-1 rounded-md">

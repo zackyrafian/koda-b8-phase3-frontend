@@ -1,7 +1,10 @@
 import { Bell, Link2, Shield } from "lucide-react";
 import Header from "../../components/common/header";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 
 export default function ProfilePage() {
+  const { logout } = useContext(AuthContext)
   return (
     <div className="min-h-screen flex gap-12 flex-col">
       <Header />
@@ -68,7 +71,7 @@ export default function ProfilePage() {
         </div>
 
 
-        <button className="bg-black/10 p-2 flex-1 rounded-lg">Logout Session</button>
+        <button className="bg-black/10 p-2 flex-1 rounded-lg cursor-pointer" onClick={() => logout()}>Logout Session</button>
       </div>
     </div>
   );
