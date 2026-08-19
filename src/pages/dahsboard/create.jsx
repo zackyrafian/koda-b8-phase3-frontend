@@ -1,18 +1,21 @@
-import { ArrowLeft, Eye, Link2, Zap } from "lucide-react";
+import { ArrowLeft, Eye, Link2, Zap, Check, Copy, X, LucideSave } from "lucide-react";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
 const API = "http://localhost:2020"
 export default function CreateShortLink() { 
-  const [slug, setSlug] = useState(); 
+  const [slug, setSlug] = useState(""); 
+  const [showModal, setShowModal] = useState(false);
+  const [createdLink, setCreatedLink] = useState("");
+  const [copied, setCopied] = useState(false);
   const { token } = useContext(AuthContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     const data = Object.fromEntries(new FormData(e.target)); 
     try {
-      await fetch(`${API}/links`, {
+      const res = await fetch(`${API}/links`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -20,10 +23,38 @@ export default function CreateShortLink() {
         },
         body: JSON.stringify(data)
       })
+      
+      if (!res.ok) {
+        throw new Error("Failed to create link");
+      }
+      
+      const result = await res.json();
+      const shortLink = `${window.location.origin}/${result.results.slug}`;
+      setCreatedLink(shortLink);
+      setShowModal(true);
+      e.target.reset();
+      setSlug("");
+      
     } catch (e) { 
       console.log(e.message)
     }
   }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(createdLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  }
+
+  const closeModal = () => {
+    setShowModal(false);
+    setCopied(false);
+  }
+
   return ( 
     <>
       <Header/>
@@ -43,7 +74,7 @@ export default function CreateShortLink() {
               <div className="flex flex-col">
                 <div className="p-2 rounded-lg border border-black/20 bg-black/3 flex gap-2 items-center">
                   <Link2 size={18}/>
-                  <input className="outline-none w-full" placeholder="https://example.com/your-long-url-here" name="original_url" type="text" />
+                  <input className="outline-none w-full" placeholder="https://example.com/your-long-url-here" name="original_url" type="text" required />
                 </div>
               </div>
               <span className="text-[11px] text-gray-500">Ensure your URL starts with http:// or https://</span>
@@ -54,7 +85,7 @@ export default function CreateShortLink() {
                 <div className="p-2 px-4 bg-black/10 h-full">{window.location.host}/</div>
                 <input onChange={(e) => {
                   setSlug(e.target.value)
-                }} className="outline-none w-full" name="slug" placeholder="my-custom-slug" type="text" />
+                }} value={slug} className="outline-none w-full" name="slug" placeholder="my-custom-slug" type="text" />
               </div>
               <span className="text-[11px] text-gray-500">Leave blank to generate a random unique identifier.</span>
             </div>
@@ -63,33 +94,37 @@ export default function CreateShortLink() {
                 <Eye size={16}/>
                 <span className="font-medium text-sm">LIVE PREVIEW</span>
               </div>
-              <p className="text-sm pl-6">Your short link will be: <span className="text-blue-800">http:{window.location.host}/{slug}</span></p>
+              <p className="text-sm pl-6">Your short link will be: <span className="text-blue-800">{window.location.host}/{slug || "random-slug"}</span></p>
             </div>
             <div className="flex gap-4">
               <button type="submit" className="flex items-center gap-2 py-2 bg-blue-700 text-white rounded-lg px-6">
                 <Zap size={16}/>
                 <span className="text-sm">Create Link</span>
               </button>
-              <button type="submit" className="py-2 rounded-lg px-4 text-sm">Cancel</button>
+              <button type="button" onClick={() => {
+                setSlug("");
+              }} className="py-2 rounded-lg px-4 text-sm">Cancel</button>
             </div>
           </form>
   
           <div className="grid grid-cols-2">
             <div className="flex gap-2">
-              <div className="rounded-full bg-amber-400 w-10 h-10">
+              <div className="rounded-full bg-blue-700 w-10 h-10 flex items-center justify-center text-white">
+                <Link2/>
               </div>
               <div className="flex flex-col gap-1.5">
-                <span>Real-time Analytics</span>
+                <span>Easy to Manage</span>
                 <span className="text-sm">Track every click, geographical location, <br/>
                 and referral source instantly.</span>
               </div>
             </div>
   
             <div className="flex gap-2">
-              <div className="rounded-full bg-amber-400 w-10 h-10">
+              <div className="rounded-full bg-blue-700 w-10 h-10 flex items-center justify-center text-white">
+                <LucideSave/>
               </div>
               <div className="flex flex-col gap-1.5">
-                <span>Real-time Analytics</span>
+                <span>Reliable & Secure</span>
                 <span className="text-sm">Track every click, geographical location, <br/>
                 and referral source instantly.</span>
               </div>
@@ -97,6 +132,56 @@ export default function CreateShortLink() {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div onClick={() => setShowModal(false)} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center gap-2">
+                <div className="bg-blue-100 p-2 rounded-full">
+                  <Check size={24} className="text-blue-600" />
+                </div>
+                <h2 className="font-semibold">Link Created Successfully!</h2>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 text-xs mb-4">Your short link is ready to use:</p>
+            
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 mb-4 flex items-center justify-between gap-2">
+              <span className="text-blue-700 font-medium truncate">{createdLink}</span>
+              <button 
+                onClick={handleCopy}
+                className="flex items-center gap-1 bg-blue-700 text-white px-2 py-1.5 rounded-md"
+              >
+                {copied ? (
+                  <>
+                    <Check size={16} />
+                  </>
+                ) : (
+                  <>
+                    <Copy size={16} />
+                  </>
+                )}
+              </button>
+            </div>
+
+            <div className="flex gap-3">
+              <Link 
+                to="/dashboard/my-link" 
+                className="flex-1 bg-blue-700 text-white py-2 px-4 rounded-lg text-center text-sm"
+              >
+                View My Links
+              </Link>
+              <button 
+                onClick={closeModal}
+                className="flex-1 border border-gray-300 py-2 px-4 rounded-lg text-sm"
+              >
+                Create Another
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
