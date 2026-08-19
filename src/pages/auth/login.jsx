@@ -26,22 +26,29 @@ export default function LoginPage() {
     }
   }
   return ( 
-    <div className="flex min-h-screen items-center justify-center flex-col gap-4">
-      <div>Login</div>
+    <div className="flex min-h-screen items-center justify-center flex-col gap-8">
+      <h1 className="text-2xl font-bold">ShortLink</h1>
 
-      <form onSubmit={handleSubmit} action="" className="flex gap-2 flex-col min-w-1/4"> 
-        <div className="flex flex-col">
-          <label htmlFor="">Email</label>
-          <input name="email" className="px-4 py-2 border rounded-xl" type="email" />
+      <form onSubmit={handleSubmit} action="" className="bg-white border-black/20 border shadow-sm p-8 flex gap-4 flex-col min-w-1/3 rounded-lg"> 
+        <div className="mb-4">
+          <h1 className="text-2xl font-medium">Welcome Back</h1>
+          <p>Please enter your details to sign in.</p>
         </div>
         <div className="flex flex-col">
-          <label htmlFor="">Password</label>
-          <input name="password" className="px-4 py-2 border rounded-xl" type="password" />
+          <label className="text-sm" htmlFor="">Email Address</label>
+          <input name="email" className="px-4 py-2 border border-black/20 rounded-lg" type="email" />
         </div>
-        <button className="flex items-center justify-center">Sign Up</button>
+        <div className="flex flex-col">
+          <div className="justify-between flex">
+            <label className="text-sm" htmlFor="">Password</label>
+            <span className="text-sm">Forget Passsword?</span>
+          </div>
+          <input name="password" className="px-4 py-2 border border-black/20 rounded-lg" type="password" />
+        </div>
+        <button className="flex items-center justify-center bg-blue-700 p-2 rounded-lg text-white">Log In</button>
       </form>
       <div>
-        <span>Already have an account? <Link to={"/login"}>Register</Link></span>
+        <span className="text-sm">Already have an account? <Link to={"/login"}>Sign Up</Link></span>
       </div>
     </div>
   )
