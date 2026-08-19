@@ -1,22 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Link2 } from "lucide-react"
+import toast from "react-hot-toast";
 
 const API = "http://localhost:2020"
 
 export default function RegisterPage() { 
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => { 
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target)) 
     console.log(data)
     try { 
-      await fetch(`${API}/auth/register`, { 
+      const res = await fetch(`${API}/auth/register`, { 
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),
       })
+      const responsetData = await res.json();
+      toast.success(responsetData.message)
+      navigate('/login')
+      e.target.reset();
     } catch (e) { 
       console.log(e.message)
+      toast.error(e.message)
     }
   }
   return ( 
