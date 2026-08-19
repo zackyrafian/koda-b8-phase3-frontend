@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import RegisterPage from "../pages/auth/register";
 import LoginPage from "../pages/auth/login";
 import CreateShortLink from "../pages/dahsboard/create";
@@ -6,23 +6,23 @@ import RedirectPage from "../pages/redirect";
 import HomePage from "../pages/home";
 import MyLinksPage from "../pages/dahsboard/my-link";
 import ProfilePage from "../pages/dahsboard/profile";
+import ProtectedRoute from "./ProtectedRoute";
+import NotFound from "../components/not-found";
 
 export const router = createBrowserRouter([
   {
-    path: "/auth",
-    children: [
-      {
-        path: "register", 
-        element: <RegisterPage/>
-      }, 
-      {
-        path: "login", 
-        element: <LoginPage/>
-      }
-    ]
+    path: "register", 
+    element: <RegisterPage/>
+  }, 
+  {
+    path: "login", 
+    element: <LoginPage/>
   },
   {
     path: "/dashboard", 
+    element: (<ProtectedRoute>
+      <Outlet/>
+    </ProtectedRoute>),
     children: [ 
       {
         path: "create", 
@@ -45,5 +45,9 @@ export const router = createBrowserRouter([
   { 
     path: "/",
     element: <HomePage/>
+  }, 
+  {
+    path: "*",
+    element: <NotFound/>
   }
 ]);
