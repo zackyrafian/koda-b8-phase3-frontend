@@ -1,4 +1,5 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext(null);
 
@@ -16,8 +17,31 @@ export function AuthProvider({ children }) {
     setToken(newToken);
   }
 
+  function logout() { 
+    localStorage.removeItem(TOKEN_KEY);
+    setToken(null)
+  }
+
+  useEffect(() => { 
+    if (!token) return;
+    const checkExpiry = () => { 
+      try { 
+        const decodeToken = jwtDecode(token)
+        console.log(decodeToken)
+        if (decodeToken.exp < Date.now() / 1000) { 
+          logout();
+        }
+      } catch (e) { 
+        logout();
+      }
+    }
+    checkExpiry();
+    const interval = setInterval(checkExpiry, 60 * 1000); 
+    return () => clearInterval(interval)
+  }, [token])
+
   return (
-    <AuthContext.Provider value={{ token, setToken: updateToken }}>
+    <AuthContext.Provider value={{ token, setToken: updateToken, logout }}>
       {children}
     </AuthContext.Provider>
   );
