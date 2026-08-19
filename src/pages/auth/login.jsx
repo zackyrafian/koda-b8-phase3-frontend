@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import toast from "react-hot-toast";
 const API = "http://localhost:2020"
 
 export default function LoginPage() { 
@@ -15,14 +16,17 @@ export default function LoginPage() {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),
       })
-      if (!res.ok) { 
-        throw new Error("Failed fetch data.")
-      }
+    
       const responseData = await res.json();
+      if (!res.ok) { 
+        throw new Error(responseData.message)
+      }
       setToken(responseData.results.token)
+      toast.success(responseData.message)
       navigate("/")
     } catch (e) { 
       console.log(e.message)
+      toast.error(e.message)
     }
   }
   return ( 
