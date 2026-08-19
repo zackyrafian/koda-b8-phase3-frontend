@@ -3,6 +3,7 @@ import { useContext, useEffect, useState, } from "react";
 import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
 import { formatDate } from "../../utils/format";
+import toast from "react-hot-toast";
 const API = "http://localhost:2020"
 
 export default function MyLinksPage() { 
@@ -44,9 +45,8 @@ export default function MyLinksPage() {
         logout();
         return;
       }
-      if (!res.ok) { 
-        throw new Error (res.message)
-      }
+      const responseData = await res.json();
+      toast.success(responseData.message)
       setSlugs((prev) => prev.filter((slug) => slug.id!== id))
     } catch (error) { 
       console.error(error.message)
@@ -67,12 +67,12 @@ export default function MyLinksPage() {
               <p className="text-3xl font-semibold ">{slugs?.length}</p>
             </div>
           </div>
-          <div className="bg-white p-2 rounded-lg flex gap-3 justify-between border border-black/20">
-            <div className="flex gap-4">
-              <Search/>
+          <div className="bg-white p-2 rounded-lg flex gap-3 justify-between border border-black/20 px-4">
+            <div className="flex gap-4 items-center">
+              <Search size={18}/>
               <input onChange={(e) => setQuery(e.target.value)} type="text" className="outline-none" placeholder="Search name or URL"/>
             </div>
-            <ListFilter/>
+            <ListFilter size={18}/>
           </div>
   
           <div className="flex flex-col gap-2">
@@ -90,7 +90,7 @@ export default function MyLinksPage() {
                   </div>
                 </div>
                 <div className="flex gap-4 items-center">
-                  <div className="bg-blue-300/50 p-1 rounded-md">
+                  <div className=" text-blue-700 p-1 rounded-md">
                     <Copy size={18} />
                   </div>
                   <button onClick={(e) => {
