@@ -9,7 +9,7 @@ export default function HomePage() {
         <div className="flex-1 flex items-center justify-center flex-col gap-8 my-auto">
           
           <div className="flex flex-col gap-8">
-            <h1 className="text-6xl font-black">Shorten URLs. <span className="text-blue-600"> Share Easily.</span></h1>
+            <h1 className="text-6xl font-black">Shorten URLs. <span className="text-blue-700"> Share Easily.</span></h1>
             <p className="text-center text-xl">Create short, memorable links for your team communications. <br/>
             Transform long, cumbersome URLs into powerful digital assets that <br/>
             drive engagement.</p>
