@@ -3,7 +3,8 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
-const API = "http://localhost:2020"
+import Footer from "../../components/common/footer";
+
 export default function CreateShortLink() { 
   const [slug, setSlug] = useState(""); 
   const [showModal, setShowModal] = useState(false);
@@ -15,7 +16,7 @@ export default function CreateShortLink() {
     e.preventDefault(); 
     const data = Object.fromEntries(new FormData(e.target)); 
     try {
-      const res = await fetch(`${API}/links`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/links`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -182,6 +183,8 @@ export default function CreateShortLink() {
           </div>
         </div>
       )}
+
+      <Footer/>
     </>
   )
 }

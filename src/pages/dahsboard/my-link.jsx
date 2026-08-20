@@ -4,7 +4,6 @@ import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
 import { formatDate } from "../../utils/format";
 import toast from "react-hot-toast";
-const API = "http://localhost:2020"
 
 export default function MyLinksPage() { 
   const { token } = useContext(AuthContext);
@@ -15,7 +14,7 @@ export default function MyLinksPage() {
     const timer = setTimeout(async() => { 
       (async () => { 
         try {
-          const res = await fetch(`${API}/links?search=${encodeURIComponent(query)}`, {
+          const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/links?search=${encodeURIComponent(query)}`, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
@@ -36,7 +35,7 @@ export default function MyLinksPage() {
 
   const handleRemove = async (id) => { 
     try { 
-      const res = await fetch(`${API}/links/${id}`, { 
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/links/${id}`, { 
         method: "DELETE", 
         headers: { Authorization: `Bearer ${token}` }
       })

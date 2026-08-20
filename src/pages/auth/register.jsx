@@ -2,8 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Link2 } from "lucide-react"
 import toast from "react-hot-toast";
 
-const API = "http://localhost:2020"
-
 export default function RegisterPage() { 
   const navigate = useNavigate();
   const handleSubmit = async (e) => { 
@@ -11,7 +9,7 @@ export default function RegisterPage() {
     const data = Object.fromEntries(new FormData(e.target)) 
     console.log(data)
     try { 
-      const res = await fetch(`${API}/auth/register`, { 
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/register`, { 
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),

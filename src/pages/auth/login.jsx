@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import toast from "react-hot-toast";
-const API = "http://localhost:2020"
 
 export default function LoginPage() { 
   const navigate = useNavigate(); 
@@ -11,7 +10,7 @@ export default function LoginPage() {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target)) 
     try { 
-      const res = await fetch(`${API}/auth/login`, { 
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/login`, { 
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),
