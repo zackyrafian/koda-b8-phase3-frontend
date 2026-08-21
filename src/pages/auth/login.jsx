@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import toast from "react-hot-toast";
+import { ArrowRight, LogIn } from "lucide-react";
 
 export default function LoginPage() { 
   const navigate = useNavigate(); 
@@ -39,19 +40,22 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-col">
           <label className="text-sm" htmlFor="">Email Address</label>
-          <input name="email" className="px-4 py-2 border border-black/20 rounded-lg" type="email" />
+          <input placeholder="email@company.com" name="email" className="px-4 py-2 border border-black/20 bg-black/5 rounded-lg" type="email" />
         </div>
         <div className="flex flex-col">
           <div className="justify-between flex">
             <label className="text-sm" htmlFor="">Password</label>
             <span className="text-sm">Forget Passsword?</span>
           </div>
-          <input name="password" className="px-4 py-2 border border-black/20 rounded-lg" type="password" />
+          <input name="password" className="px-4 py-2 border border-black/20 rounded-lg bg-black/5" type="password" />
         </div>
-        <button className="flex items-center justify-center bg-blue-700 p-2 rounded-lg text-white">Log In</button>
+        <button className="flex items-center justify-center bg-blue-700 p-2 rounded-lg text-white gap-2">
+          <span>Log In</span>
+          <ArrowRight size={18}/>
+        </button>
       </form>
       <div>
-        <span className="text-sm">Already have an account? <Link to={"/login"}>Sign Up</Link></span>
+        <span className="text-sm">Already have an account? <Link to={"/register"}>Sign Up</Link></span>
       </div>
     </div>
   )
