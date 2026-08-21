@@ -15,6 +15,10 @@ export default function RegisterPage() {
         body: JSON.stringify(data),
       })
       const responsetData = await res.json();
+      
+      if (!res.ok) { 
+        throw new Error(responsetData.message)
+      }
       toast.success(responsetData.message)
       navigate('/login')
       e.target.reset();
