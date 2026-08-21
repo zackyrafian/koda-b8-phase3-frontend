@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Header from "../../components/common/header";
 import { AuthContext } from "../../context/authContext";
 import Footer from "../../components/common/footer";
+import toast from "react-hot-toast";
 
 export default function CreateShortLink() { 
   const [slug, setSlug] = useState(""); 
@@ -25,19 +26,18 @@ export default function CreateShortLink() {
         body: JSON.stringify(data)
       })
       
-      if (!res.ok) {
-        throw new Error("Failed to create link");
-      }
-      
       const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.message);
+      }
       const shortLink = `${window.location.origin}/${result.results.slug}`;
       setCreatedLink(shortLink);
       setShowModal(true);
       e.target.reset();
       setSlug("");
-      
     } catch (e) { 
       console.log(e.message)
+      toast.error(e.message)
     }
   }
 
